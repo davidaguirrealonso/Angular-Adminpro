@@ -6,6 +6,8 @@ import { GraficalComponent } from './grafical/grafical.component';
 import { PagesComponent } from './pages.component';
 import { SharedModule } from '../shared/shared.module';
 import { RouterModule } from '@angular/router';
+import { ComponentsModule } from '../components/components.module';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -25,7 +27,9 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     SharedModule,
-    RouterModule
+    RouterModule,
+    ComponentsModule,
+    FormsModule,
   ],
 })
 export class PagesModule { }

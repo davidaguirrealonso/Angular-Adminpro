@@ -7,15 +7,12 @@ import { AuthModule } from './auth/auth.module';
 
 import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-// import { IncrementatorComponent } from './components/incrementator/incrementator.component';
-import { DonaComponent } from './components/dona/dona.component';
 import { ComponentsModule } from './components/components.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent,
-    // IncrementatorComponent
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,

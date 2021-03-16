@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { ComponentsModule } from './components/components.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,6 @@ import { ComponentsModule } from './components/components.module';
     AppRoutingModule,
     PagesModule,
     AuthModule,
-    ComponentsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

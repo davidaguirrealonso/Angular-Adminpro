@@ -9,34 +9,33 @@ export class SettingsService {
 
   constructor() {
     
-    const url = localStorage.getItem('theme') || '../../assets/css/colors/purple-dark.css';
+    const url = localStorage.getItem('theme') || './assets/css/colors/purple-dark.css';
     this.linkTheme.setAttribute('href', url);
 
   }
 
   changeTheme( theme: string ) {
   
-    const url = `../../assets/css/colors/${ theme }.css`;
+    const url = `./assets/css/colors/${ theme }.css`;
     this.linkTheme.setAttribute('href', url);
     localStorage.setItem('theme', url );
 
     this.checkCurrentTheme();
-
   }
 
   checkCurrentTheme() {
 
     const links = document.querySelectorAll('.selector');
 
-    links.forEach( element => {
+    links.forEach( elem => {
 
-      element.classList.remove('working');
-      const btnTheme = element.getAttribute('data-theme');
-      const btnThemeUrl = `../../assets/css/colors/${ btnTheme }.css`;
+      elem.classList.remove('working');
+      const btnTheme = elem.getAttribute('data-theme');
+      const btnThemeUrl = `./assets/css/colors/${ btnTheme }.css`;
       const currentTheme = this.linkTheme.getAttribute('href');
 
       if ( btnThemeUrl === currentTheme ) {
-        element.classList.add('working');
+        elem.classList.add('working');
       }
 
     });

@@ -25,13 +25,12 @@ export class PerfilComponent implements OnInit {
                private fileUploadService: FileUploadService) {
     
     this.usuario = usuarioService.usuario;
-    
   }
 
   ngOnInit(): void {
 
     this.perfilForm = this.fb.group({
-      name: [ this.usuario.name , Validators.required ],
+      nombre: [ this.usuario.nombre , Validators.required ],
       email: [ this.usuario.email, [ Validators.required, Validators.email ] ],
     });
 
@@ -40,29 +39,27 @@ export class PerfilComponent implements OnInit {
   actualizarPerfil() {
     this.usuarioService.actualizarPerfil( this.perfilForm.value )
         .subscribe( () => {
-          const { name, email } = this.perfilForm.value;
-          this.usuario.name = name;
+          const { nombre, email } = this.perfilForm.value;
+          this.usuario.nombre = nombre;
           this.usuario.email = email;
 
           Swal.fire('Guardado', 'Cambios fueron guardados', 'success');
         }, (err) => {
-
           Swal.fire('Error', err.error.msg, 'error');
-
         });
   }
 
 
   cambiarImagen( file: File ) {
     this.imagenSubir = file;
-    
+
     if ( !file ) { 
       return this.imgTemp = null;
     }
 
     const reader = new FileReader();
     reader.readAsDataURL( file );
-    
+
     reader.onloadend = () => {
       this.imgTemp = reader.result;
     }
@@ -70,12 +67,11 @@ export class PerfilComponent implements OnInit {
   }
 
   subirImagen() {
-        
+
     this.fileUploadService
-      .actualizarFoto( this.imagenSubir, 'users', this.usuario.uid )
+      .actualizarFoto( this.imagenSubir, 'usuarios', this.usuario.uid )
       .then( img => {
         this.usuario.img = img;
-
         Swal.fire('Guardado', 'Imagen de usuario actualizada', 'success');
       }).catch( err => {
         console.log(err);
@@ -83,6 +79,5 @@ export class PerfilComponent implements OnInit {
       })
 
   }
-  
 
 }

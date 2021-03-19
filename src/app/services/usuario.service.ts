@@ -1,15 +1,16 @@
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap, map, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+
 import { Observable, of } from 'rxjs';
+import { tap, map, catchError } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 
-
-
 import { RegisterForm } from '../interfaces/register-form.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
+import { CargarUsuario } from '../interfaces/cargar-usuarios.interface';
+
 import { Usuario } from '../models/usuario.model';
 
 const base_url = environment.base_url;
@@ -37,6 +38,14 @@ export class UsuarioService {
 
   get uid():string {
     return this.usuario.uid || '';
+  }
+
+  get headers() {
+    return {
+      headers: {
+        'x-token': this.token
+      }
+    }
   }
 
   googleInit() {
@@ -67,18 +76,16 @@ export class UsuarioService {
   }
 
   validarToken(): Observable<boolean> {
-
-    return this.http.get(`${ base_url }/auth/renew`, {
+    
+    return this.http.get(`${ base_url }/login/renew`, {
       headers: {
         'x-token': this.token
       }
     }).pipe(
       map( (resp: any) => {
-        const { email, google, name, role, img = '', uid } = resp.user;
-        this.usuario = new Usuario( name, email, '', img, google, role, uid );
-
+        const { email, google, nombre, role, img = '', uid } = resp.usuario;
+        this.usuario = new Usuario( nombre, email, '', img, google, role, uid );
         localStorage.setItem('token', resp.token );
-
         return true;
       }),
       catchError( error => of(false) )
@@ -88,9 +95,8 @@ export class UsuarioService {
 
 
   crearUsuario( formData: RegisterForm ) {
-    console.log(`${ base_url }/users`);
     
-    return this.http.post(`${ base_url }/users`, formData )
+    return this.http.post(`${ base_url }/usuarios`, formData )
               .pipe(
                 tap( (resp: any) => {
                   localStorage.setItem('token', resp.token )
@@ -104,19 +110,15 @@ export class UsuarioService {
     data = {
       ...data,
       role: this.usuario.role
-    };
+    }
 
-    return this.http.put(`${ base_url }/users/${ this.uid }`, data, {
-      headers: {
-        'x-token': this.token
-      }
-    });
+    return this.http.put(`${ base_url }/usuarios/${ this.uid }`, data, this.headers );
 
   }
 
   login( formData: LoginForm ) {
     
-    return this.http.post(`${ base_url }/auth`, formData )
+    return this.http.post(`${ base_url }/login`, formData )
                 .pipe(
                   tap( (resp: any) => {
                     localStorage.setItem('token', resp.token )
@@ -127,7 +129,7 @@ export class UsuarioService {
 
   loginGoogle( token ) {
     
-    return this.http.post(`${ base_url }/auth/google`, { token } )
+    return this.http.post(`${ base_url }/login/google`, { token } )
                 .pipe(
                   tap( (resp: any) => {
                     localStorage.setItem('token', resp.token )
@@ -137,5 +139,35 @@ export class UsuarioService {
   }
 
   
+  cargarUsuarios( desde: number = 0 ) {
+
+    const url = `${ base_url }/usuarios?desde=${ desde }`;
+    return this.http.get<CargarUsuario>( url, this.headers )
+            .pipe(
+              map( resp => {
+                const usuarios = resp.usuarios.map( 
+                  user => new Usuario(user.nombre, user.email, '', user.img, user.google, user.role, user.uid )  
+                );
+                return {
+                  total: resp.total,
+                  usuarios
+                };
+              })
+            )
+  }
+
+
+  eliminarUsuario( usuario: Usuario ) {
+    
+      // /usuarios/5eff3c5054f5efec174e9c84
+      const url = `${ base_url }/usuarios/${ usuario.uid }`;
+      return this.http.delete( url, this.headers );
+  }
+
+  guardarUsuario( usuario: Usuario ) {
+
+    return this.http.put(`${ base_url }/usuarios/${ usuario.uid }`, usuario, this.headers );
+
+  }
 
 }

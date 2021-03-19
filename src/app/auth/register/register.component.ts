@@ -15,7 +15,7 @@ export class RegisterComponent {
   public formSubmitted = false;
 
   public registerForm = this.fb.group({
-    name: ['Fernando', Validators.required ],
+    nombre: ['Fernando', Validators.required ],
     email: ['test100@gmail.com', [ Validators.required, Validators.email ] ],
     password: ['123456', Validators.required ],
     password2: ['123456', Validators.required ],
@@ -30,12 +30,11 @@ export class RegisterComponent {
 
   crearUsuario() {
     this.formSubmitted = true;
-    console.log( this.registerForm.value );
 
     if ( this.registerForm.invalid ) {
       return;
     }
-    
+
     // Realizar el posteo
     this.usuarioService.crearUsuario( this.registerForm.value )
         .subscribe( resp => {

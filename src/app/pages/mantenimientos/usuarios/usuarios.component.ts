@@ -25,9 +25,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   public desde: number = 0;
   public cargando: boolean = true;
 
-  public incremento: number = 5;
-  public hasta: number = this.incremento;
-
   constructor( private usuarioService: UsuarioService,
                private busquedasService: BusquedasService,
                private modalImagenService: ModalImagenService ) { }
@@ -55,18 +52,12 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   cambiarPagina( valor: number ) {
-    this.desde += valor * this.incremento;
+    this.desde += valor;
 
     if ( this.desde < 0 ) {
       this.desde = 0;
     } else if ( this.desde >= this.totalUsuarios ) {
-      this.desde -= valor * this.incremento;
-    }
-    
-    if ( this.hasta > (this.totalUsuarios - this.incremento) ) {
-      this.hasta = this.totalUsuarios;
-    } else {
-      this.hasta = this.desde + this.incremento;
+      this.desde -= valor; 
     }
 
     this.cargarUsuarios();
@@ -79,7 +70,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     }
 
     this.busquedasService.buscar( 'usuarios', termino )
-        .subscribe( resp => {
+        .subscribe( (resp: Usuario[]) => {
 
           this.usuarios = resp;
 
